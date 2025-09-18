@@ -50,7 +50,7 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -58,7 +58,7 @@
             "description": "Implement the core database models using SQLModel to represent repositories and search index entries with proper relationships and validation",
             "dependencies": [],
             "details": "Create kodeklip/models.py with SQLModel classes. Repository model with fields: id (primary key), alias (unique string), url (string), local_path (string), last_updated (datetime), indexed (boolean). SearchIndex model with fields: id (primary key), repo_id (foreign key to Repository), file_path (string), content_hash (string), embedding_data (optional JSON). Add proper SQLModel table configurations, relationships, and field validations.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Unit tests for model creation, validation, and field constraints. Test model relationships and foreign key constraints."
           },
           {
@@ -67,7 +67,7 @@
             "description": "Create database setup and connection management with proper SQLite engine configuration and session handling",
             "dependencies": [],
             "details": "Create kodeklip/database.py with SQLite engine setup using SQLModel. Implement create_db_and_tables() function to initialize database schema at ~/.kodeklip/db.sqlite. Create get_session() context manager for database operations. Add database directory creation logic and proper connection string configuration. Include error handling for database creation and connection issues.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test database file creation, schema initialization, and session context manager functionality. Verify tables are created correctly."
           },
           {
@@ -79,7 +79,7 @@
               "2.2"
             ],
             "details": "Create kodeklip/repository_manager.py with functions for database operations: add_repository(alias, url, local_path), get_repository(alias), list_repositories(), update_repository_status(alias, last_updated, indexed), remove_repository(alias). Implement proper error handling, validation, and transaction management. Use SQLModel sessions from database.py and ensure proper cleanup.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Integration tests for all CRUD operations, test data persistence and retrieval, verify error handling for duplicate aliases and missing repositories."
           },
           {
@@ -91,7 +91,7 @@
               "2.2"
             ],
             "details": "Create kodeklip/schema.py with functions to validate existing database schema, check table structure, and verify data integrity. Implement get_schema_version() and validate_schema() functions. Add utilities for database backup and recovery. Include schema upgrade path preparation for future versions.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test schema validation against known good and corrupted databases, verify backup and recovery functionality, test with empty and populated databases."
           }
         ]
@@ -504,7 +504,7 @@
     ],
     "metadata": {
       "created": "2025-09-18T07:00:09.900Z",
-      "updated": "2025-09-18T07:54:27.163Z",
+      "updated": "2025-09-18T21:47:30.532Z",
       "description": "Tasks for master context"
     }
   }
