@@ -1,0 +1,511 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize Python Project with Poetry",
+        "description": "Set up the foundational project structure with poetry for dependency management, create basic package structure, and configure development environment",
+        "details": "Create pyproject.toml with poetry configuration, set up src/kodeklip package structure with __init__.py, main.py for CLI entry point. Configure Python 3.9+ requirement, add initial dependencies: typer for CLI, sqlmodel for database ORM, gitpython for git operations, rich for terminal output. Create basic CLI entry point using typer.Typer() with placeholder commands.",
+        "testStrategy": "Verify poetry install works, test CLI entry point responds to --help, validate package structure follows Python conventions",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create poetry project structure and pyproject.toml configuration",
+            "description": "Initialize the foundational Python project structure using poetry with proper package layout and dependency management configuration",
+            "dependencies": [],
+            "details": "Run 'poetry init' to create pyproject.toml with project metadata: name='kodeklip', version='0.1.0', description='Surgical Code Context Management Tool', python requirement '^3.9'. Add core dependencies: typer for CLI framework, sqlmodel for ORM, gitpython for git operations, rich for terminal formatting. Create src/kodeklip directory structure with __init__.py to establish the package. Configure build system and tool.poetry sections.",
+            "status": "done",
+            "testStrategy": "Verify poetry install works correctly, test that package structure follows Python conventions, validate pyproject.toml syntax with poetry check"
+          },
+          {
+            "id": 2,
+            "title": "Implement CLI entry point with typer framework",
+            "description": "Create the main CLI application structure using typer with placeholder commands and proper application entry point configuration",
+            "dependencies": [],
+            "details": "Create src/kodeklip/main.py with typer.Typer() app instance. Implement placeholder commands for add, list, update, find, and index using @app.command() decorators. Add proper CLI help text and version information. Configure entry point in pyproject.toml under [tool.poetry.scripts] to make 'kk' command available after installation. Add basic error handling and rich console output setup.",
+            "status": "done",
+            "testStrategy": "Test CLI responds to 'kk --help' and 'kk --version', verify all placeholder commands are accessible and show proper help text, validate entry point works after poetry install"
+          },
+          {
+            "id": 3,
+            "title": "Set up development environment and basic project validation",
+            "description": "Complete the development environment setup with proper tooling configuration and validate the basic project structure works end-to-end",
+            "dependencies": [],
+            "details": "Add development dependencies: pytest for testing, black for code formatting, mypy for type checking. Create .gitignore with Python-specific entries. Set up poetry virtual environment and install dependencies. Create basic test file test_cli.py to validate CLI entry point. Configure VS Code settings if .vscode directory exists. Add pre-commit hooks configuration for code quality.",
+            "status": "done",
+            "testStrategy": "Run 'poetry install' to verify all dependencies install correctly, test 'kk' command works in activated environment, run basic pytest to ensure test infrastructure works, validate code formatting and type checking tools function properly"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Implement SQLite Database Models with SQLModel",
+        "description": "Create database models for repository management and implement SQLite database initialization with proper schema",
+        "details": "Create models.py with SQLModel classes: Repository (id, alias, url, local_path, last_updated, indexed), SearchIndex (id, repo_id, file_path, content_hash, embedding_data). Implement database.py with SQLite engine setup, create_db_and_tables() function, get_session() context manager. Use ~/.kodeklip/db.sqlite as default database location.",
+        "testStrategy": "Unit tests for model validation, test database creation and table schema, verify CRUD operations work correctly",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create SQLModel database models for repositories and search indexing",
+            "description": "Implement the core database models using SQLModel to represent repositories and search index entries with proper relationships and validation",
+            "dependencies": [],
+            "details": "Create kodeklip/models.py with SQLModel classes. Repository model with fields: id (primary key), alias (unique string), url (string), local_path (string), last_updated (datetime), indexed (boolean). SearchIndex model with fields: id (primary key), repo_id (foreign key to Repository), file_path (string), content_hash (string), embedding_data (optional JSON). Add proper SQLModel table configurations, relationships, and field validations.",
+            "status": "pending",
+            "testStrategy": "Unit tests for model creation, validation, and field constraints. Test model relationships and foreign key constraints."
+          },
+          {
+            "id": 2,
+            "title": "Implement SQLite database initialization and session management",
+            "description": "Create database setup and connection management with proper SQLite engine configuration and session handling",
+            "dependencies": [],
+            "details": "Create kodeklip/database.py with SQLite engine setup using SQLModel. Implement create_db_and_tables() function to initialize database schema at ~/.kodeklip/db.sqlite. Create get_session() context manager for database operations. Add database directory creation logic and proper connection string configuration. Include error handling for database creation and connection issues.",
+            "status": "pending",
+            "testStrategy": "Test database file creation, schema initialization, and session context manager functionality. Verify tables are created correctly."
+          },
+          {
+            "id": 3,
+            "title": "Implement repository CRUD operations with database integration",
+            "description": "Create database access layer for repository management operations connecting the models to actual database operations",
+            "dependencies": [
+              "2.1",
+              "2.2"
+            ],
+            "details": "Create kodeklip/repository_manager.py with functions for database operations: add_repository(alias, url, local_path), get_repository(alias), list_repositories(), update_repository_status(alias, last_updated, indexed), remove_repository(alias). Implement proper error handling, validation, and transaction management. Use SQLModel sessions from database.py and ensure proper cleanup.",
+            "status": "pending",
+            "testStrategy": "Integration tests for all CRUD operations, test data persistence and retrieval, verify error handling for duplicate aliases and missing repositories."
+          },
+          {
+            "id": 4,
+            "title": "Create database schema validation and migration utilities",
+            "description": "Implement utilities to ensure database schema integrity and handle potential future migrations",
+            "dependencies": [
+              "2.1",
+              "2.2"
+            ],
+            "details": "Create kodeklip/schema.py with functions to validate existing database schema, check table structure, and verify data integrity. Implement get_schema_version() and validate_schema() functions. Add utilities for database backup and recovery. Include schema upgrade path preparation for future versions.",
+            "status": "pending",
+            "testStrategy": "Test schema validation against known good and corrupted databases, verify backup and recovery functionality, test with empty and populated databases."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Implement Git Repository Management",
+        "description": "Build core functionality to clone, update, and manage local git repositories using GitPython",
+        "details": "Create git_manager.py with GitRepository class. Implement clone_repository(url, alias) to clone to ~/.kodeklip/repos/{alias}, update_repository(alias) to pull latest changes, remove_repository(alias) to clean up local files and database entries. Handle git authentication, validation of repository URLs, and error handling for network issues.",
+        "testStrategy": "Integration tests with public repositories, test clone/update/remove operations, verify error handling for invalid URLs and network failures",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create GitRepository Class and Core Git Operations",
+            "description": "Implement the foundational GitRepository class with core git operations including clone, validation, and basic error handling",
+            "dependencies": [],
+            "details": "Create git_manager.py with GitRepository class. Implement __init__(url, alias, local_path), validate_repository_url() for URL validation, clone_repository() method to clone to ~/.kodeklip/repos/{alias} using GitPython. Add proper error handling for invalid URLs, network failures, and git authentication issues. Include logging for git operations.",
+            "status": "pending",
+            "testStrategy": "Unit tests for URL validation, integration tests with public GitHub repositories, test error handling for invalid URLs and network connectivity issues"
+          },
+          {
+            "id": 2,
+            "title": "Implement Repository Update and Synchronization",
+            "description": "Add functionality to update existing repositories and handle git pull operations with conflict resolution",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Extend GitRepository class with update_repository(alias) method using git pull operations. Handle merge conflicts, detached HEAD states, and authentication for private repositories. Implement check_for_updates() to compare local and remote commit hashes. Add last_updated timestamp tracking and integration with database models.",
+            "status": "pending",
+            "testStrategy": "Test update operations on repositories with new commits, verify handling of merge conflicts, test authentication with private repositories, validate timestamp tracking accuracy"
+          },
+          {
+            "id": 3,
+            "title": "Implement Repository Cleanup and Management Operations",
+            "description": "Add repository removal functionality and comprehensive repository management operations",
+            "dependencies": [
+              "3.1",
+              "3.2"
+            ],
+            "details": "Implement remove_repository(alias) to safely delete local repository files and clean up database entries. Add list_repositories() to enumerate all managed repositories with status information. Implement repository_exists() and get_repository_info() helper methods. Include disk space management and orphaned repository cleanup functionality.",
+            "status": "pending",
+            "testStrategy": "Test safe repository removal without data loss, verify database cleanup after removal, test repository listing with various states, validate disk space calculations and cleanup operations"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Build CLI Commands for Repository Management",
+        "description": "Implement typer-based CLI commands for add, list, update, and remove repository operations",
+        "details": "Create cli.py with typer commands: add_repo(repo_url, alias), list_repos(), update_repos(alias=None), remove_repo(alias). Integrate with git_manager and database models. Add rich formatting for list command showing repo status, last updated, indexed status. Implement --all flag for update command.",
+        "testStrategy": "CLI integration tests using typer.testing.CliRunner, test all command variations and error cases, verify rich output formatting",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create CLI Foundation with Typer Framework",
+            "description": "Set up the core CLI infrastructure using Typer to handle command routing and argument parsing for repository management commands",
+            "dependencies": [],
+            "details": "Create src/kodeklip/cli.py with typer.Typer() app instance. Define CLI entry point function and basic command structure. Add error handling with rich console for user-friendly error messages. Configure CLI to handle global options and establish foundation for repository commands.",
+            "status": "pending",
+            "testStrategy": "Test CLI initialization, verify typer app responds to --help command, test error handling with invalid commands"
+          },
+          {
+            "id": 2,
+            "title": "Implement Repository CRUD Commands",
+            "description": "Build the core repository management commands (add, list, update, remove) with database and git integration",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Implement add_repo(repo_url, alias) command that validates URLs, calls git_manager to clone repository, and saves to database. Create list_repos() command with rich table formatting showing alias, URL, status, last_updated, and indexed status. Implement update_repos(alias=None) with --all flag support. Add remove_repo(alias) command with confirmation prompt and cleanup of both database and filesystem.",
+            "status": "pending",
+            "testStrategy": "Test each command with valid and invalid inputs, verify database updates, test rich formatting output, validate git operations integration"
+          },
+          {
+            "id": 3,
+            "title": "Add Command Validation and Rich Output Formatting",
+            "description": "Enhance CLI commands with comprehensive input validation, error handling, and professional rich-formatted output",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Add input validation for repository URLs (support GitHub, GitLab, Bitbucket patterns), alias naming conventions (alphanumeric + hyphens). Implement rich console formatting for list command with colored status indicators, formatted dates, and file size information. Add progress indicators for long-running operations like clone/update. Include --verbose flag for detailed output and --quiet for minimal output.",
+            "status": "pending",
+            "testStrategy": "Test input validation with edge cases, verify rich formatting across different terminal sizes, test progress indicators with slow network operations"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Integrate Ripgrep for Keyword Search",
+        "description": "Implement fast keyword search functionality using ripgrep integration with ripgrepy wrapper",
+        "details": "Create search.py with RipgrepSearcher class. Use ripgrepy Python wrapper for structured output instead of JSON parsing. Implement search_repository(alias, query, file_types=None) with ripgrepy.Ripgrepy() for Python-native operations. Add file type filtering and search options.",
+        "testStrategy": "Test search across different file types, verify ripgrepy integration, test with various query patterns including regex, benchmark search performance",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and Configure Ripgrep Dependencies",
+            "description": "Set up ripgrep system binary and Python wrapper with proper detection and fallback mechanisms",
+            "dependencies": [],
+            "details": "Install ripgrep system binary (brew install ripgrep or apt-get install ripgrep). Install ripgrepy Python wrapper: pip install ripgrepy. Create ripgrep detection and version compatibility checking. Add fallback mechanisms for systems without ripgrep installed.",
+            "status": "pending",
+            "testStrategy": "Test ripgrep availability detection, verify version compatibility, test fallback behavior on systems without ripgrep"
+          },
+          {
+            "id": 2,
+            "title": "Create RipgrepSearcher Class with ripgrepy Integration",
+            "description": "Build the core search functionality using ripgrepy for structured Python-native ripgrep operations",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Create RipgrepSearcher class using ripgrepy.Ripgrepy() for search operations. Implement search_repository(alias, query, file_types=None) method. Use ripgrepy's .with_filename().line_number() for structured output. Parse ripgrepy results into standardized SearchResult objects with file_path, line_number, content, and context.",
+            "status": "pending",
+            "testStrategy": "Test search functionality with various queries, verify structured output parsing, test with different file types and patterns"
+          },
+          {
+            "id": 3,
+            "title": "Implement Advanced Search Options and Filtering",
+            "description": "Add comprehensive search options including file filtering, case sensitivity, and regex patterns",
+            "dependencies": [
+              "5.2"
+            ],
+            "details": "Add file type filtering using .with_glob() patterns for specific extensions. Implement case-insensitive search options with .ignore_case(). Add context lines support (-A, -B, -C flags). Create regex pattern validation and error handling for malformed queries.",
+            "status": "pending",
+            "testStrategy": "Test file type filtering accuracy, verify case sensitivity options, test context lines functionality, validate regex pattern error handling"
+          },
+          {
+            "id": 4,
+            "title": "Add Search Result Formatting and Caching",
+            "description": "Implement result caching, performance optimization, and consistent output formatting",
+            "dependencies": [
+              "5.3"
+            ],
+            "details": "Convert ripgrepy results to consistent JSON-like format for API compatibility. Implement search result caching for repeated queries using file modification timestamps. Add search performance metrics and benchmarking. Create search result ranking and relevance scoring based on match quality.",
+            "status": "pending",
+            "testStrategy": "Test result caching effectiveness, verify performance improvements, test ranking algorithm accuracy, validate output format consistency"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Build Interactive Find Command",
+        "description": "Create the core 'kk find' command with interactive TUI mode and advanced search options",
+        "details": "Extend cli.py with find_command(alias, query, interactive=False). Integrate RipgrepSearcher to perform searches, format results with rich tables. Add -i/--interactive flag for TUI mode, file type filtering, and advanced search options.",
+        "testStrategy": "Test find command with various queries, verify result formatting and interactive mode, test error handling for non-existent aliases",
+        "priority": "medium",
+        "dependencies": [
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Basic Find Command Structure",
+            "description": "Implement the foundational find command with basic search functionality and output formatting",
+            "dependencies": [],
+            "details": "Implement 'kk find <alias> \"<query>\"' command using Typer. Integrate with RipgrepSearcher class from Task 5. Add basic output formatting with Rich tables showing file paths, line numbers, and matched content. Implement error handling for invalid aliases and missing repositories.",
+            "status": "pending",
+            "testStrategy": "Test find command with valid and invalid aliases, verify basic output formatting, test error handling for missing repositories"
+          },
+          {
+            "id": 2,
+            "title": "Add Advanced Find Options and Flags",
+            "description": "Implement comprehensive command-line options for search customization and filtering",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Add -i/--interactive flag for TUI mode activation. Implement -t/--type for file type filtering (e.g., -t py for Python files). Add -c/--context for context lines around matches. Add --case-sensitive and --regex flags for search behavior control. Implement --limit flag for result count restriction.",
+            "status": "pending",
+            "testStrategy": "Test all command flags and options, verify file type filtering accuracy, test context lines functionality, validate regex and case sensitivity options"
+          },
+          {
+            "id": 3,
+            "title": "Implement Search Result Display and Navigation",
+            "description": "Create professional search result presentation with pagination and sorting options",
+            "dependencies": [
+              "6.2"
+            ],
+            "details": "Create Rich-formatted search result display with colored syntax highlighting. Add pagination for large result sets (--page-size option). Implement result sorting by relevance, file path, or line number. Add search result export functionality (--output-format json/csv). Include result summary statistics.",
+            "status": "pending",
+            "testStrategy": "Test result formatting with large datasets, verify pagination functionality, test sorting algorithms, validate export format accuracy"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement Textual TUI Framework Foundation",
+        "description": "Create interactive TUI using Textual with proper App structure, two-pane layout, and reactive programming",
+        "details": "Create tui.py with SearchApp(App) class using Textual framework. Implement compose() method with proper widget composition. Design two-pane layout with search results and preview. Add keyboard navigation and event handling using Textual's reactive system.",
+        "testStrategy": "Manual testing of TUI responsiveness, test keyboard navigation, verify layout renders correctly in different terminal sizes",
+        "priority": "high",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Textual App Structure and Base Components",
+            "description": "Set up the foundational SearchApp class with proper Textual framework integration and basic widget composition",
+            "dependencies": [],
+            "details": "Create SearchApp(App) class with Textual framework. Implement compose() method for widget composition. Add basic CSS-like styling configuration. Create base widget classes for search interface. Install textual dependency and verify proper initialization.",
+            "status": "pending",
+            "testStrategy": "Test app initialization, verify compose() method functionality, test basic styling application, validate Textual framework integration"
+          },
+          {
+            "id": 2,
+            "title": "Build Two-Pane Layout with Search Results and Preview",
+            "description": "Implement the core two-pane interface with search results list and file preview using Textual layout system",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Create Horizontal() container layout for two-pane design. Implement LeftPane(Widget) for scrollable search results list with proper list item widgets. Create RightPane(Widget) for file preview with Rich syntax highlighting. Add responsive layout handling for different terminal sizes and proper widget sizing.",
+            "status": "pending",
+            "testStrategy": "Test layout responsiveness across terminal sizes, verify two-pane split functionality, test scrolling in both panes, validate syntax highlighting"
+          },
+          {
+            "id": 3,
+            "title": "Add Keyboard Navigation and Selection Logic",
+            "description": "Implement comprehensive keyboard controls and selection management using Textual's event system",
+            "dependencies": [
+              "7.2"
+            ],
+            "details": "Implement key bindings using Textual's key handling (j/k for navigation, space for select, enter for action). Add multi-selection functionality with visual indicators and selection state management. Create result highlighting and focus management. Add search input widget at top with real-time filtering capabilities.",
+            "status": "pending",
+            "testStrategy": "Test all keyboard shortcuts, verify multi-selection behavior, test focus management between panes, validate search input functionality"
+          },
+          {
+            "id": 4,
+            "title": "Integrate Clipboard Operations and Export",
+            "description": "Add clipboard integration and result export functionality with proper formatting and user feedback",
+            "dependencies": [
+              "7.3"
+            ],
+            "details": "Install pyperclip for cross-platform clipboard operations. Implement selected results formatting and copying with 'c' key binding. Create configurable export templates for different output formats (markdown, plain text). Add confirmation dialogs and user feedback messages using Textual's notification system.",
+            "status": "pending",
+            "testStrategy": "Test clipboard functionality across platforms, verify export formatting quality, test user feedback and confirmation dialogs, validate template system"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Enhanced Clipboard and Output Formatting System",
+        "description": "Create advanced clipboard integration with configurable templates and batch processing capabilities",
+        "details": "Build comprehensive clipboard system with multiple output formats, template engine, and advanced formatting options. Extend beyond basic TUI clipboard to include CLI export commands and configuration management.",
+        "testStrategy": "Test clipboard functionality across platforms, verify template system, test batch operations and configuration management",
+        "priority": "medium",
+        "dependencies": [
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Advanced Clipboard Template System",
+            "description": "Build configurable template engine for different output formats and use cases",
+            "dependencies": [],
+            "details": "Create template engine with configurable formats (markdown, plain text, JSON, code blocks). Implement template variables for file paths, line numbers, timestamps, and repository info. Add user-configurable template storage (~/.kodeklip/templates/). Include built-in templates for common LLM prompt formats.",
+            "status": "pending",
+            "testStrategy": "Test template rendering with various data, verify variable substitution, test custom template loading, validate built-in template quality"
+          },
+          {
+            "id": 2,
+            "title": "Implement Batch Processing and Export Commands",
+            "description": "Add CLI commands for batch export operations and advanced formatting options",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Implement 'kk export' command for batch operations outside of TUI. Add --format flag for output format selection. Create --output-file option for saving to files. Add batch processing for multiple search results and repositories. Include compression options for large exports.",
+            "status": "pending",
+            "testStrategy": "Test batch export functionality, verify file output quality, test compression options, validate performance with large datasets"
+          },
+          {
+            "id": 3,
+            "title": "Add Configuration Management and User Preferences",
+            "description": "Create comprehensive configuration system for clipboard and output preferences",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Create ~/.kodeklip/config.toml for user preferences. Add clipboard behavior settings (auto-copy, format selection). Implement output preferences (line numbers, context, syntax highlighting). Add keyboard shortcut customization. Include configuration validation and migration system.",
+            "status": "pending",
+            "testStrategy": "Test configuration loading and validation, verify preference application, test configuration migration, validate keyboard shortcut customization"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Implement Tree-sitter Code Parsing for Semantic Search",
+        "description": "Build intelligent code parsing using tree-sitter with proper language support and AST-based extraction",
+        "details": "Create semantic parsing system using py-tree-sitter with tree-sitter-languages for multi-language support. Implement AST-based code chunk extraction with precise boundaries. Add language detection and parser management with query-based extraction.",
+        "testStrategy": "Test parsing accuracy across different languages, verify chunk boundaries are correct, test with malformed code files",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and Configure Tree-sitter Dependencies",
+            "description": "Set up py-tree-sitter with language parsers and create parser management system",
+            "dependencies": [],
+            "details": "Install py-tree-sitter: pip install tree-sitter. Install tree-sitter-languages: pip install tree-sitter-languages for pre-compiled parsers. Configure language parsers for Python, JavaScript, TypeScript, Go, Rust, Java, C/C++. Create parser availability detection and language identification system.",
+            "status": "pending",
+            "testStrategy": "Test parser installation for all languages, verify language detection accuracy, test parser availability detection, validate parser initialization"
+          },
+          {
+            "id": 2,
+            "title": "Create AST Parser and Code Chunk Extractor",
+            "description": "Build TreeSitterParser class with AST traversal and precise code boundary extraction",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Create TreeSitterParser class with Language() integration for each supported language. Implement AST traversal for function/class extraction using tree-sitter queries. Add precise code boundary detection with start_line/end_line extraction. Create CodeChunk model for storing parsed results with content, type, language, and metadata.",
+            "status": "pending",
+            "testStrategy": "Test AST parsing accuracy, verify code boundary precision, test with nested functions/classes, validate CodeChunk model data integrity"
+          },
+          {
+            "id": 3,
+            "title": "Build Code Semantic Analysis System",
+            "description": "Implement advanced code analysis including function signatures, dependencies, and complexity metrics",
+            "dependencies": [
+              "9.2"
+            ],
+            "details": "Create function signature analysis with parameter and return type extraction. Implement dependency detection between functions and classes using tree-sitter queries. Add code complexity analysis using AST metrics (cyclomatic complexity, depth). Create semantic tagging for different code constructs (functions, classes, methods, variables).",
+            "status": "pending",
+            "testStrategy": "Test signature extraction accuracy, verify dependency detection, test complexity calculations, validate semantic tagging across languages"
+          },
+          {
+            "id": 4,
+            "title": "Integrate with Search and Indexing Pipeline",
+            "description": "Connect tree-sitter parsing to repository indexing with incremental parsing and error handling",
+            "dependencies": [
+              "9.3"
+            ],
+            "details": "Integrate tree-sitter parsing into repository indexing workflow. Create parsed code chunk storage in SQLite database with proper schema. Implement incremental parsing for updated files using file modification timestamps. Add comprehensive parsing error handling and recovery mechanisms for malformed code.",
+            "status": "pending",
+            "testStrategy": "Test integration with repository indexing, verify incremental parsing efficiency, test error handling with malformed code, validate database storage integrity"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Build Vector Indexing with FAISS and Semantic Search",
+        "description": "Implement intelligent semantic search using SentenceTransformers embeddings and FAISS vector indexing with proper model selection and index management",
+        "details": "Create comprehensive vector search system using sentence-transformers and FAISS. Implement proper embedding generation for code chunks with code-focused models. Build FAISS index management with persistence and efficient similarity search integration.",
+        "testStrategy": "Test semantic search relevance with code queries, benchmark indexing performance, verify embedding quality with similar code detection",
+        "priority": "medium",
+        "dependencies": [
+          9
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Install and Configure FAISS Dependencies",
+            "description": "Set up FAISS, sentence-transformers, and configure embedding models for code search",
+            "dependencies": [],
+            "details": "Install FAISS CPU version: pip install faiss-cpu (or faiss-gpu for GPU support). Install sentence-transformers: pip install sentence-transformers. Configure embedding model selection (all-MiniLM-L6-v2 for general code/text, microsoft/codebert-base for code-specific). Add model caching and loading optimization. Create GPU/CPU detection for FAISS index selection.",
+            "status": "pending",
+            "testStrategy": "Test FAISS installation, verify model loading and caching, test GPU/CPU detection, validate embedding model performance"
+          },
+          {
+            "id": 2,
+            "title": "Create Vector Embedding Generation System",
+            "description": "Build CodeEmbedder class for generating high-quality embeddings from parsed code chunks",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Implement CodeEmbedder class with SentenceTransformers integration. Create function/class text representation for embedding generation including docstrings and comments. Add context preservation for code chunks (surrounding code, imports). Implement batch processing for large codebases with progress tracking. Add embedding quality validation and normalization.",
+            "status": "pending",
+            "testStrategy": "Test embedding generation quality, verify batch processing performance, test context preservation effectiveness, validate embedding normalization"
+          },
+          {
+            "id": 3,
+            "title": "Build FAISS Index Management System",
+            "description": "Create comprehensive FAISS index storage, retrieval, and management with persistence",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Create FaissIndexManager class for vector storage and retrieval operations. Implement IndexFlatL2 for exact similarity search and IndexIVFPQ for large-scale approximate search. Add index persistence to disk (~/.kodeklip/embeddings/) with proper serialization. Create index versioning and migration system for model updates. Implement index optimization and compression.",
+            "status": "pending",
+            "testStrategy": "Test index creation and persistence, verify search accuracy and performance, test index versioning, validate compression effectiveness"
+          },
+          {
+            "id": 4,
+            "title": "Implement Semantic Search Integration",
+            "description": "Add semantic search to CLI commands with hybrid search and result ranking",
+            "dependencies": [
+              "10.3"
+            ],
+            "details": "Integrate semantic search into find command with -s/--semantic flag. Implement vector similarity scoring with configurable thresholds. Create hybrid search combining ripgrep keyword + semantic vector results with intelligent ranking. Add semantic search result deduplication and relevance scoring. Integrate with 'kk index' command for repository embedding generation.",
+            "status": "pending",
+            "testStrategy": "Test semantic search integration, verify hybrid search ranking quality, test result deduplication, validate indexing command functionality"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-18T07:00:09.900Z",
+      "updated": "2025-09-18T07:54:27.163Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

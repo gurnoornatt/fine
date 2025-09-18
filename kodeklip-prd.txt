@@ -1,0 +1,53 @@
+KodeKlip Product Requirements Document
+
+1. Vision: Slay the Context Bloat Dragon
+To give developers a lightning-fast, command-line tool that provides surgical control over their LLM context, making their models smarter, faster, and more accurate by injecting only the most relevant code.
+
+2. Guiding Principles
+- Surgical Precision, Not Brute Force: Extract smallest, most relevant code snippets
+- Developer Control: No magic, explicit search, selection, and approval
+- Speed is a Feature: Instantaneous workflow that never breaks flow state
+- Frictionless Workflow: 10x more efficient than manual clone/find/copy/paste
+
+3. The Problem (Context Bloat)
+- Automated MCPs dump irrelevant code into LLM prompts
+- Degrades model performance with noise
+- Wastes context window on useless information
+- Increases API costs
+
+4. Core Features
+- kk add <repo_url>: Clone library into local knowledge base
+- kk list: View cached libraries and index status
+- kk update: Keep libraries up-to-date
+- kk find <alias> "<query>": Instant ripgrep search
+- kk index <alias>: Pre-process for semantic search
+- kk find -i --semantic: Interactive TUI selection
+
+5. Technical Implementation Plan
+
+Phase 1: Build the Foundation
+- Project initialization with poetry/uv
+- SQLite + SQLModel state management
+- Git operations with GitPython
+- Basic repo commands (add, list, update, rm)
+- Keyword search with ripgrep integration
+
+Phase 2: Interactive TUI (Killer Feature)
+- Two-pane Textual interface
+- Left pane: scrollable search results
+- Right pane: syntax-highlighted preview
+- Navigation and multi-select functionality
+- Clipboard integration with formatting
+
+Phase 3: Semantic Search Intelligence
+- tree-sitter parsing for precise code chunks
+- SentenceTransformers embeddings
+- FAISS vector indexing
+- Semantic search integration with TUI
+
+Phase 4: Public Launch
+- Comprehensive testing with pytest
+- Professional README with problem/solution narrative
+- GitHub Actions automation
+- PyPI publishing
+- Community launch
