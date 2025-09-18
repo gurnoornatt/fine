@@ -1,5 +1,8 @@
 # KodeKlip - Surgical Code Context Management Tool
 
+## Project Status & Context
+**IMPORTANT**: Before working on any task, read `status.md` for current progress, completed tasks, and technical context. This file maintains continuity across context resets and provides essential project state information.
+
 ## Project Overview
 KodeKlip (kk) is a command-line utility designed to combat "context bloat" in LLM interactions by providing surgical precision in code context management. Instead of relying on automated context providers (MCPs) that dump irrelevant code and degrade model performance, KodeKlip gives developers explicit control over their LLM context.
 
