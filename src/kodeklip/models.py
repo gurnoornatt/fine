@@ -7,7 +7,7 @@ Uses SQLModel for type-safe ORM with SQLite backend.
 """
 
 from datetime import datetime
-from typing import Optional
+# No typing imports needed - using built-in union types
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -20,7 +20,7 @@ class Repository(SQLModel, table=True):
     local paths, indexing status, and last update timestamps.
     """
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     alias: str = Field(
         index=True, unique=True, description="Unique identifier for the repository"
     )
@@ -28,7 +28,7 @@ class Repository(SQLModel, table=True):
     local_path: str = Field(
         description="Local filesystem path where repository is cloned"
     )
-    last_updated: Optional[datetime] = Field(
+    last_updated: datetime | None = Field(
         default=None, description="Timestamp of last repository update"
     )
     indexed: bool = Field(
@@ -48,7 +48,7 @@ class SearchIndex(SQLModel, table=True):
     with optional embedding data for semantic search capabilities.
     """
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     repo_id: int = Field(
         foreign_key="repository.id", description="Reference to parent repository"
     )
@@ -58,7 +58,7 @@ class SearchIndex(SQLModel, table=True):
     content_hash: str = Field(
         index=True, description="Hash of file content for change detection"
     )
-    embedding_data: Optional[str] = Field(
+    embedding_data: str | None = Field(
         default=None, description="JSON-serialized embedding vector data"
     )
     created_at: datetime = Field(
@@ -67,4 +67,4 @@ class SearchIndex(SQLModel, table=True):
     )
 
     # Relationship: Each search index entry belongs to one repository
-    repository: Optional[Repository] = Relationship(back_populates="search_indexes")
+    repository: Repository | None = Relationship(back_populates="search_indexes")

@@ -120,7 +120,7 @@ def get_session(db_path: str | None = None) -> Generator[Session, None, None]:
             session.close()
 
 
-def get_database_info(db_path: str | None = None) -> dict[str, str | bool]:
+def get_database_info(db_path: str | None = None) -> dict[str, str | bool | float]:
     """Get database information and status.
 
     Args:
@@ -131,7 +131,7 @@ def get_database_info(db_path: str | None = None) -> dict[str, str | bool]:
     """
     config = DatabaseConfig(db_path)
 
-    info = {
+    info: dict[str, str | bool | float] = {
         "database_path": str(config.db_path),
         "database_exists": config.db_path.exists(),
         "kodeklip_dir": str(config.kodeklip_dir),

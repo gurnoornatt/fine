@@ -31,6 +31,9 @@ dependencies = [
     "sqlmodel>=0.0.16",
     "gitpython>=3.1.0",
     "ripgrepy>=1.0.0",
+    "setuptools (>=80.9.0,<81.0.0)",
+    "textual (>=6.1.0,<7.0.0)",
+    "pyperclip (>=1.10.0,<2.0.0)",
 ]
 
 [project.optional-dependencies]
@@ -69,6 +72,7 @@ black = "^23.0.0"
 mypy = "^1.0.0"
 ruff = "^0.1.0"
 pre-commit = "^3.0.0"
+types-pyperclip = "^1.9.0.20250801"
 
 [tool.black]
 line-length = 88

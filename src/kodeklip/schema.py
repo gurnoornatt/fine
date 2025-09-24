@@ -50,7 +50,7 @@ def get_schema_version(db_path: str | None = None) -> int:
     try:
         with get_session(db_path) as session:
             # Check if schema_version table exists
-            result = session.exec(
+            result = session.exec(  # type: ignore[call-overload]
                 text(
                     "SELECT name FROM sqlite_master WHERE type='table' "
                     "AND name='schema_version'"
@@ -62,7 +62,7 @@ def get_schema_version(db_path: str | None = None) -> int:
                 return 0
 
             # Get current version
-            version_result = session.exec(
+            version_result = session.exec(  # type: ignore[call-overload]
                 text(
                     "SELECT version FROM schema_version ORDER BY id DESC LIMIT 1"
                 )
@@ -86,7 +86,7 @@ def set_schema_version(version: int, db_path: str | None = None) -> None:
     try:
         with get_session(db_path) as session:
             # Create schema_version table if it doesn't exist
-            session.exec(
+            session.exec(  # type: ignore[call-overload]
                 text(
                     """
                 CREATE TABLE IF NOT EXISTS schema_version (
@@ -99,7 +99,7 @@ def set_schema_version(version: int, db_path: str | None = None) -> None:
             )
 
             # Insert new version
-            session.exec(
+            session.exec(  # type: ignore[call-overload]
                 text("INSERT INTO schema_version (version) VALUES (:version)").params(
                     version=version
                 )
@@ -124,7 +124,7 @@ def validate_schema(db_path: str | None = None) -> dict[str, bool | str | int]:
     """
     try:
         config = DatabaseConfig(db_path)
-        validation_results = {
+        validation_results: dict[str, bool | str | int] = {
             "database_exists": config.db_path.exists(),
             "schema_version": 0,
             "tables_exist": False,
@@ -363,13 +363,13 @@ def get_database_statistics(db_path: str | None = None) -> dict[str, int | float
 
 
 def repair_database(
-    db_path: str | None = None, create_backup: bool = True
+    db_path: str | None = None, make_backup: bool = True
 ) -> dict[str, bool | int]:
     """Attempt to repair common database issues.
 
     Args:
         db_path: Optional custom database path
-        create_backup: Whether to create backup before repair
+        make_backup: Whether to create backup before repair
 
     Returns:
         Dictionary with repair results
@@ -386,7 +386,7 @@ def repair_database(
         }
 
         # Create backup if requested
-        if create_backup:
+        if make_backup:
             try:
                 create_backup(db_path)
                 repair_results["backup_created"] = True
@@ -396,7 +396,7 @@ def repair_database(
 
         with get_session(db_path) as session:
             # Enable foreign keys
-            session.exec(text("PRAGMA foreign_keys=ON"))
+            session.exec(text("PRAGMA foreign_keys=ON"))  # type: ignore[call-overload]
             repair_results["foreign_keys_fixed"] = True
 
             # Remove orphaned search indexes
